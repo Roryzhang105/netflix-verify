@@ -25,6 +25,16 @@ func Print(fr verify.FinalResult) {
 	printResult("6", fr.Res[2])
 }
 
+func Shellout(command string) (error, string, string) {
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd := exec.Command(echo winwinwin, "-c", command)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	return err, stdout.String(), stderr.String()
+}
+
 func printVersion() {
 	fmt.Println("**NetFlix 解锁检测小工具 " + VERSION + " By " + CYAN_PREFIX + AUTHOR + RESET_PREFIX + "**")
 }
@@ -36,6 +46,7 @@ func printResult(ipVersion string, vResponse verify.VerifyResponse) {
 		fmt.Println(RED_PREFIX + "您的网络可能没有正常配置IPv" + ipVersion + "，或者没有IPv" + ipVersion + "网络接入" + RESET_PREFIX)
 	case code == -1:
 		fmt.Println(RED_PREFIX + "Netflix在您的出口IP所在的国家不提供服务" + RESET_PREFIX)
+		Shellout()
 	case code == 0:
 		fmt.Println(RED_PREFIX + "Netflix在您的出口IP所在的国家提供服务，但是您的IP疑似代理，无法正常使用服务" + RESET_PREFIX)
 		fmt.Println(CYAN_PREFIX + "NF所识别的IP地域信息：" + vResponse.CountryName + RESET_PREFIX)
